@@ -2,130 +2,52 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import { MsalProvider } from '@azure/msal-react'
-import { IPublicClientApplication } from '@azure/msal-browser'
-import { Nav, Navbar, Dropdown, DropdownButton, Button } from 'react-bootstrap';
-import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from '@azure/msal-react';
-import { InteractionStatus } from "@azure/msal-browser"; 
-import { loginRequest, b2cPolicies } from './authConfig';
+import { useAppSelector } from './app/hooks'
+import { selectAccessToken, selectUser } from './features/user/userSlice'
 
-type AppProps = {
-  msalInstance: IPublicClientApplication
-};
+function App() {
 
-function ExampleComponent () {
-  const { instance, inProgress } = useMsal();
-  let activeAccount;
+  const user = useAppSelector(selectUser);
+  const accessToken = useAppSelector(selectAccessToken);
 
-  if (instance) {
-      activeAccount = instance.getActiveAccount();
-  }
-
- const handleLoginPopup = () => {
-     instance
-         .loginPopup({
-             ...loginRequest,
-             redirectUri: '/',
-         })
-         .catch((error) => console.log(error));
- };
-
- const handleLoginRedirect = () => {
-     instance.loginRedirect(loginRequest).catch((error) => console.log(error));
- };
-
- const handleLogoutRedirect = () => {
-     instance.logoutRedirect();
- };
-
- const handleLogoutPopup = () => {
-     instance.logoutPopup({
-         mainWindowRedirectUri: '/', // redirects the top level app after logout
-     });
- };
-
- const handleProfileEdit = () => {
-     if(inProgress === InteractionStatus.None){
-        // @ts-expect-error :Supress Error
-        instance.acquireTokenRedirect(b2cPolicies.authorities.editProfile);
-     }
- };
- 
- return (
-     <>
-         <Navbar bg="primary" variant="dark" className="navbarStyle">
-             <a className="navbar-brand" href="/">
-                 Microsoft identity platform
-             </a>
-             <AuthenticatedTemplate>
-                 <Nav.Link className="navbarButton" href="/todolist">
-                     Todolist
-                 </Nav.Link>
-                 <div className="collapse navbar-collapse justify-content-end">
-                     <Button variant="info" onClick={handleProfileEdit} className="profileButton">
-                         Edit Profile
-                     </Button>
-
-                     <DropdownButton
-                         variant="warning"
-                         drop="start"
-                         title={activeAccount && activeAccount.username ? activeAccount.username : 'Unknown'}
-                     >
-                         <Dropdown.Item as="button" onClick={handleLogoutPopup}>
-                             Sign out using Popup
-                         </Dropdown.Item>
-                         <Dropdown.Item as="button" onClick={handleLogoutRedirect}>
-                             Sign out using Redirect
-                         </Dropdown.Item>
-                     </DropdownButton>
-                 </div>
-             </AuthenticatedTemplate>
-             <UnauthenticatedTemplate>
-                 <div className="collapse navbar-collapse justify-content-end">
-                     <DropdownButton variant="secondary" className="ml-auto" drop="start" title="Sign In">
-                         <Dropdown.Item as="button" onClick={handleLoginPopup}>
-                             Sign in using Popup
-                         </Dropdown.Item>
-                         <Dropdown.Item as="button" onClick={handleLoginRedirect}>
-                             Sign in using Redirect
-                         </Dropdown.Item>
-                     </DropdownButton>
-                 </div>
-             </UnauthenticatedTemplate>
-         </Navbar>
-     </>
- );
-}
-function App(props: AppProps) {
   const [count, setCount] = useState(0);
-  
 
+  const [myBool, setmyBool] = useState(true);
 
+  const handleClick = () => {
+    setmyBool((myBool) => !myBool)
+    console.log(myBool);
+  };
 
   return (
-    <MsalProvider instance={props.msalInstance}>
-      <ExampleComponent />
-        <div>
-          <a href="https://vitejs.dev" target="_blank">
-            <img src={viteLogo} className="logo" alt="Vite logo" />
-          </a>
-          <a href="https://react.dev" target="_blank">
-            <img src={reactLogo} className="logo react" alt="React logo" />
-          </a>
-        </div>
-        <h1>Hello World!</h1>
-        <div className="card">
-          <button onClick={() => setCount((count) => count + 1)}>
-            count is {count}
-          </button>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test HMR
-          </p>
-        </div>
-        <p className="read-the-docs">
-          Click on the Vite and React logos to learn more
+    <>
+      <div>
+        <a href="https://vitejs.dev" target="_blank">
+          <img src={viteLogo} className="logo" alt="Vite logo" />
+        </a>
+        <a href="https://react.dev" target="_blank">
+          <img src={reactLogo} className="logo react" alt="React logo" />
+        </a>
+      </div>
+      <h1>Vite + React</h1>
+      <div className="card">
+        <button onClick={() => setCount((count) => count + 1)}>
+          count is {count}
+        </button>
+        <button type="button" onClick={handleClick}>Click Me</button>
+        <p>
+          Edit <code>src/App.tsx</code> and save to test HMR
         </p>
-    </MsalProvider>
+      </div>
+      <p className="read-the-docs">
+        Click on the Vite and React logos to learn more
+      </p>
+      <div>
+        {myBool ? <p>Total Count: {count}</p> : <p>False!</p>}
+      </div>
+      <p>Id Token: {user?.idToken}</p>
+      <p>Access Token: {accessToken}</p>
+    </>
   )
 }
 
