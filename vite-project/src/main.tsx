@@ -6,10 +6,11 @@ import { PublicClientApplication, EventMessage, AuthenticationResult, EventType 
 import { msalConfig } from './authConfig'; 
 import { store } from './app/store'
 import { Provider } from 'react-redux'
-import User from './features/user/user.tsx';
+import User from './features/user/User.tsx';
+import { QueryClientProvider,QueryClient } from '@tanstack/react-query';
 
 export const msalInstance = new PublicClientApplication(msalConfig);
-
+const queryClient = new QueryClient();
 // Default to using the first account if no account is active on page load
 if (!msalInstance.getActiveAccount() && msalInstance.getAllAccounts().length > 0) {
   // Account selection logic is app dependent. Adjust as needed for different use cases.
@@ -28,9 +29,11 @@ msalInstance.addEventCallback((event: EventMessage) => {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <Provider store={store}>
-      <User msalInstance={msalInstance} />
-      <App />
-    </Provider>
+    <QueryClientProvider client={queryClient}>
+      <Provider store={store}>
+        <User msalInstance={msalInstance} />
+        <App />
+      </Provider>
+    </QueryClientProvider>
   </React.StrictMode>,
 )

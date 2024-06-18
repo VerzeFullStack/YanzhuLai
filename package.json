@@ -1,6 +1,8 @@
 {
   "dependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@reduxjs/toolkit": "^2.2.5",
+    "@tanstack/react-table": "^8.17.3",
     "react-redux": "^9.1.2"
   }
 }
