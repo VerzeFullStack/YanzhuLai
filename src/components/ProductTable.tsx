@@ -1,77 +1,30 @@
-import './App.css'
-import { useAppSelector } from './app/hooks'
-import { selectAccessToken, selectUser } from './features/user/userSlice'
+
 import React, { Fragment } from 'react';
-import './index.css';
-import './App.css';
-import { useReactTable, getCoreRowModel, getExpandedRowModel, ColumnDef, flexRender, Row, ExpandedState, PaginationState } from '@tanstack/react-table';
-import { fetchData, makeData, Product } from './makeData.ts';
+import '../index.css';
+
+import { useReactTable, getCoreRowModel, getExpandedRowModel, flexRender, ExpandedState, PaginationState } from '@tanstack/react-table';
+import { fetchData, Product } from '../makeData.ts';
 import {
   keepPreviousData,
   useQuery,
 } from '@tanstack/react-query';
 
+import { TableProps } from './ProductTableHelper.tsx'
 
-const columns: ColumnDef<Product>[] = [
-  {
-    accessorKey: 'product',
-    header: 'Product',
-    cell: ({ row, getValue }) => (
-      <div
-        style={{
-          paddingLeft: `${row.depth * 2}rem`,
-        }}
-      >
-        {getValue<string>()}
-      </div>
-    ),
-    footer: (props) => props.column.id,
-  },
 
-  {
-    accessorKey: 'uploadDate',
-    header: () => 'Date Uploaded',
-    footer: (props) => props.column.id,
-  },
 
-  {
-    accessorKey: 'views',
-    header: () => <span>Views</span>,
-    footer: (props) => props.column.id,
-  },
-
-  {
-    accessorKey: 'uploader',
-    header: 'Uploader',
-    footer: (props) => props.column.id,
-  },
-  {
-    accessorKey: 'onlineDate',
-    header: 'Last Online',
-    footer: (props) => props.column.id,
-  },
-];
-
-type TableProps<TData> = {
-  data: TData[];
-  columns: ColumnDef<TData>[];
-  renderSubComponent: (props: { row: Row<TData> }) => React.ReactElement;
-  getRowCanExpand: (row: Row<TData>) => boolean;
-};
 
 
 //const queryClient = new QueryClient();
 
 function Table({
-
+  data,
   columns,
   renderSubComponent,
   getRowCanExpand,
 }: TableProps<Product>): JSX.Element {
 
   const rerender = React.useReducer(() => ({}), {})[1]
-
-  const defaultData = React.useMemo(() => [], [])
 
   const [expanded, setExpanded] = React.useState<ExpandedState>({})
 
@@ -86,7 +39,7 @@ function Table({
     placeholderData: keepPreviousData, // don't have 0 rows flash while changing pages/loading next page
   });
   const table = useReactTable<Product>({
-    data: dataQuery.data?.rows ?? defaultData,
+    data,
     columns,
     getRowCanExpand,
     getCoreRowModel: getCoreRowModel(),
@@ -234,50 +187,8 @@ function Table({
   );
 }
 
-function renderSubComponent({
-  row,
-}: {
-  row: Row<Product>;
-}): React.ReactElement {
-  const product: Product = row.original;
-
-  return (
-    <div style={{ padding: '10px', margin: '5px', backgroundColor: '#f0f0f0' }}>
-      <h3>{product.product}</h3>
-      <p>{product.description}</p>
-      <img
-        src={product.image}
-        alt={product.product}
-        style={{ width: '100px', height: 'auto' }}
-      />
-        <button
-          className="border rounded p-1"
-        >
-          {'Buy'}
-        </button>
-    </div>
-  );
-}
-
-function App() {
-  const [data] = React.useState(() => makeData(10));
-  const user = useAppSelector(selectUser);
-  const accessToken = useAppSelector(selectAccessToken);
 
 
-  return (
-    <>
 
-      <Table
-        data={data}
-        columns={columns}
-        getRowCanExpand={() => true}
-        renderSubComponent={renderSubComponent}
-      />
-      <p>Id Token: {user?.idToken}</p>
-      <p>Access Token: {accessToken}</p>
-    </>
-  )
-}
 
-export default App
+export default Table

@@ -47,7 +47,7 @@ const newProduct = (): Product => {
 export function makeData(...lens: number[]) {
   const makeDataLevel = (depth = 0): Product[] => {
     const len = lens[depth]!;
-    return range(len).map((d): Product => {
+    return range(len).map((): Product => {
       return {
         ...newProduct(),
         subRows: lens[depth + 1] ? makeDataLevel(depth + 1) : undefined,
