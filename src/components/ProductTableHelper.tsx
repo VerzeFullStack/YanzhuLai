@@ -5,7 +5,7 @@ import { ColumnDef, Row } from '@tanstack/react-table';
 import { Product } from '../makeData.ts';
 
 export type TableProps<TData> = {
-    data: TData[];
+    
     columns: ColumnDef<TData>[];
     renderSubComponent: (props: { row: Row<TData> }) => React.ReactElement;
     getRowCanExpand: (row: Row<TData>) => boolean;

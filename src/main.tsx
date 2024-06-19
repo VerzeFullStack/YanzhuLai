@@ -9,7 +9,6 @@ import { Provider } from 'react-redux'
 import User from './features/user/User.tsx';
 import { QueryClientProvider,QueryClient } from '@tanstack/react-query';
 import Table from './components/ProductTable.tsx';
-import { makeData } from './makeData.ts';
 import { columns, renderSubComponent } from './components/ProductTableHelper.tsx';
 
 export const msalInstance = new PublicClientApplication(msalConfig);
@@ -20,7 +19,7 @@ if (!msalInstance.getActiveAccount() && msalInstance.getAllAccounts().length > 0
   msalInstance.setActiveAccount(msalInstance.getAllAccounts()[0]);
 }
 
-const data = makeData(10);
+//const data = makeData(15);
 
 msalInstance.addEventCallback((event: EventMessage) => {
   if ((event.eventType === EventType.LOGIN_SUCCESS ||
@@ -39,7 +38,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <User msalInstance={msalInstance} />
         <App />
         <Table
-        data={data}
+  
         columns={columns}
         getRowCanExpand={() => true}
         renderSubComponent={renderSubComponent}

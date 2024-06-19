@@ -18,7 +18,7 @@ import { TableProps } from './ProductTableHelper.tsx'
 //const queryClient = new QueryClient();
 
 function Table({
-  data,
+  
   columns,
   renderSubComponent,
   getRowCanExpand,
@@ -33,13 +33,15 @@ function Table({
     pageSize: 10,
   });
   
+  const defaultData = React.useMemo(() => [], [])
+
   const dataQuery = useQuery({
     queryKey: ['data', pagination],
     queryFn: () => fetchData(pagination),
     placeholderData: keepPreviousData, // don't have 0 rows flash while changing pages/loading next page
   });
   const table = useReactTable<Product>({
-    data,
+    data: dataQuery.data?.rows ?? defaultData,
     columns,
     getRowCanExpand,
     getCoreRowModel: getCoreRowModel(),
@@ -114,28 +116,40 @@ function Table({
       <div className="flex items-center gap-2">
         <button
           className="border rounded p-1"
-          onClick={() => table.firstPage()}
+          onClick={() => {
+            table.firstPage();
+            table._autoResetExpanded();
+          }}
           disabled={!table.getCanPreviousPage()}
         >
           {'<<'}
         </button>
         <button
           className="border rounded p-1"
-          onClick={() => table.previousPage()}
+          onClick={() => {
+            table.previousPage();
+            table._autoResetExpanded();
+          }}
           disabled={!table.getCanPreviousPage()}
         >
           {'<'}
         </button>
         <button
           className="border rounded p-1"
-          onClick={() => table.nextPage()}
+          onClick={() => {
+            table.nextPage();
+            table._autoResetExpanded();
+          }}
           disabled={!table.getCanNextPage()}
         >
           {'>'}
         </button>
         <button
           className="border rounded p-1"
-          onClick={() => table.lastPage()}
+          onClick={() => {
+            table.lastPage();
+            table._autoResetExpanded();
+          }}
           disabled={!table.getCanNextPage()}
         >
           {'>>'}
