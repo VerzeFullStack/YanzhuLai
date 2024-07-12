@@ -13,8 +13,8 @@ import { LogLevel } from "@azure/msal-browser";
  */
 export const b2cPolicies = {
     names: {
-        signUpSignIn: 'B2C_1_passwordreset1',
-        forgotPassword: 'B2C_1_reset_v3',
+        signUpSignIn: 'B2C_1_signupsignin1',
+        forgotPassword: 'B2C_1_passwordreset1',
         editProfile: 'B2C_1_profileediting1',
     },
     authorities: {
@@ -85,8 +85,8 @@ export const protectedResources = {
     apiTodoList: {
         endpoint: 'http://localhost:5000/api/todolist',
         scopes: {
-            read: ['https://t425132.onmicrosoft.com/tasks-api/tasks.read'],
-            write: ['https://t425132.onmicrosoft.com/tasks-api/tasks.write'],
+            read: ['https://t425132.onmicrosoft.com/marketplace-api/users.read'],
+            write: ['https://t425132.onmicrosoft.com/marketplace-api/users.write'],
         },
     },
 };

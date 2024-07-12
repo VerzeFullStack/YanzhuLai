@@ -58,6 +58,7 @@ export function makeData(...lens: number[]) {
   return makeDataLevel();
 }
 
+//Generate Data outside of React Component
 const data = makeData(10000);
 
 export async function fetchData(options: {
